@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head', {title: actor.first_name}) %>
+
+<body>
+    <%- include('partials/header') %>
+
+    <main>
+
+        <div class="col-12 col-md-10 mx-auto mt-3">
+            <div class="card">
+                <div class="card-header">
+                    <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/actors">Actores</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%= actor.first_name %> <%= actor.last_name %></li>
+                        </ol>
+                        <div>
+                            <a href="/actors/edit/<%= actor.id %>" class="btn btn-dark btn-sm">Editar</a>
+                            <a href="/actors/delete/<%= actor.id %>" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><b>Nombre: </b><%= actor.first_name.toUpperCase() %></li>
+                                <li class="list-group-item"><b>Apellido: </b><%= actor.last_name.toUpperCase() %></li>
+                                <li class="list-group-item"><b>Calificación: </b><%= actor.rating %></li>
+                                <li class="list-group-item"><b>ID pelicula favorita: </b><%= (actor.favorite_movie_id != null) ? actor.favorite_movie_id : "Sin película favorita" %></li>
+                                <li class="list-group-item"><b>Peliculas: </b>
+                                    <ul>
+                                        <% if (movies.length === 0) { %>
+                                            <li>Sin películas registradas</li>
+                                        <% } else { %>
+                                            <% movies.forEach(movie => { %>
+                                                <li><%= movie.title %></li>
+                                            <% }); %>
+                                        <% } %>
+                                    </ul>
+                                </li>        
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

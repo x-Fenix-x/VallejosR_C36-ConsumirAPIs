@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<%- include('partials/head', {title: Movie.title }) %>
+
+
+    <body>
+        <%- include('partials/header') %>
+
+            <main>
+                <h1 class="titulo fs-3 mb-2 mt-2">Película Editada: <%= Movie.title %>
+                </h1>
+
+                <div class="col-12 col-md-10 mx-auto mt-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="/movies">Películas</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                        <%= Movie.title %>
+                                    </li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="card-body">
+                            <form class="row g-3" action="/movies/update/<%= Movie.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+                                <div class="mb-2 col-md-6">
+                                    <label for="title" class="form-label">Título 🎬</label>
+                                    <input type="text" class="form-control" name="title" id="title"
+                                        value="<%= Movie.title %>">
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="genre_id" class="form-label">Género 🎭</label>
+                                    <select name="genre_id" id="genre_id" name="genre_id" class="form-select">
+                                        <% genres.forEach(genre=> { %>
+                                            <option value="<%= genre.id %>" <%=genre.id===Movie.genre_id && "selected" %>>
+                                                <%= genre.name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="length" class="form-label">Duración ⏳</label>
+                                    <input type="number" class="form-control" name="length" id="length"
+                                        value="<%= Movie.length %>">
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="rating" class="form-label">Rating ⭐⭐⭐</label>
+                                    <input type="number" class="form-control" name="rating" id="rating"
+                                        value="<%= Movie.rating %>">
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="awards" class="form-label">Premios 🥇</label>
+                                    <input type="number" class="form-control" name="awards" id="awards"
+                                        value="<%= Movie.awards %>">
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="release_date" class="form-label">Fecha de estreno 📅</label>
+                                    <input type="date" class="form-control" name="release_date" id="release_date"
+                                        value="<%= moment(Movie.release_date).format('YYYY-MM-DD') %>">
+                                </div>
+                                <div class="mb-2 col-md-3">
+                                    <label for="formFile" class="form-label">Cargar imagen 👓</label>
+                                    <input type="file" class="form-control" name="image" id="formFile">
+                                </div>
+                                <div class="mb-2 col-12">
+                                    <label class="form-label">Actores 🧙‍♀️🧙‍♂️</label>
+                                    <hr>
+                                    <div class="row">
+                                        <% actors.forEach(actor=> { %>
+                                            <div class="col-12 col-md-3 col-lg-2">
+                                                <div class="form-check">
+                                                    <input name="actors" class="form-check-input" type="checkbox"
+                                                        <%=Movie.actors.map(actor=> actor.id).includes(actor.id) &&
+                                                    "checked" %> value="<%= actor.id %>" id="actor <%= actor.id %>">
+                                                            <label class="form-check-label" for="actor <%= actor.id %>">
+                                                                <%= actor.first_name %>
+                                                                    <%= actor.last_name %>
+                                                            </label>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                    </div>
+                                </div>
+                                <div class="col-12 d-md-none">
+                                    <button type="submit" class="btn btn-dark w-100">Actualizar</button>
+                                </div>
+                                <div class="col-md-12 d-none d-md-flex justify-content-end">
+                                    <button type="submit" class="btn btn-dark">Actualizar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+    </body>
+
+</html>

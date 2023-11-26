@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head', {title: 'Listado de Peliculas' }) %>
+
+<body>
+        <%- include('partials/header') %>
+
+    <main>
+        
+    <div class="col-12 col-md-10 mx-auto mt-3">
+        <div class="card">
+            <div class="card-header">
+                <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Películas</li>
+                    </ol>
+                    <a href="/movies/add" class="btn btn-dark btn-sm">Agregar película</a>
+                </nav>
+            </div>
+
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th class="table-dark" scope="col">#</th>
+                            <th class="table-dark" scope="col">Título</th>
+                            <th class="table-dark d-none d-md-table-cell" scope="col">Rating</th>
+                            <th class="table-dark d-none d-md-table-cell" scope="col">Premios</th>
+                            <th class="table-dark d-none d-md-table-cell" scope="col">Género</th>
+                            <th class="table-dark" scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% movies.forEach(({id, title, rating, awards, genre, length, release_date, image, actors}, index)=> { %>
+                            <tr>
+                                <th scope="row">
+                                    <%= index + 1 %>
+                                </th>
+                                <td>
+                                    <a href="/movies/detail/<%= id %>">
+                                        <%= title %>
+                                    </a>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <% if (rating < 4) { %>
+                                        <span class="text-danger"><%= rating %></span>
+                                      <% } else if (rating < 6) { %>
+                                        <span class="text-warning"><%= rating %></span>
+                                      <% } else { %>
+                                        <span class="text-success"><%= rating %></span>
+                                      <% } %>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <%= awards %>
+                                </td>
+                                <td class="d-none d-md-table-cell">
+                                    <%= genre?.name || "Sin clasificar" %>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <!-- Button trigger modal detail movie -->
+                                        <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="modal" data-bs-target="#detailMovie<%=id%>">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+
+                                        <div class="modal fade" id="detailMovie<%=id%>" tabindex="-1"
+                                            aria-labelledby="detailMovie<%=id%>Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg  modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="detailMovie<%=id%>Label">
+                                                            Detalles de la película 🎬
+                                                        </h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="card mb-3">
+                                                            <div class="row g-0">
+                                                                <div class="col-12">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="col-12 col-md-4">  
+                                                                                    <img src="/img/<%= image %>" class="img-fluid" alt="">
+                                                                            </div>
+                                                                            <div class="col-12 col-md-8">
+                                                                                <ul class="list-group list-group-flush">
+                                                                                    <li class="list-group-item"><b><%= title.toUpperCase() %></b></li>
+                                                                                    <li class="list-group-item"><b>Género: </b><%= genre?.name || "Sin clasificar" %></li>
+                                                                                    <li class="list-group-item"><b>Duración: </b><%= (length != null) ? (length + " min") : "Sin datos" %></li>
+                                                                                    <li class="list-group-item"><b>Calificación: </b><%= rating %></li>
+                                                                                    <li class="list-group-item"><b>Premios: </b><%= awards %></li>
+                                                                                    <li class="list-group-item"><b>Fecha de estreno: </b><%= moment(release_date, 'DDMMMMY').locale('es').format('DD [de] MMMM [de] YYYY') %></li>
+                                                                                    <li class="list-group-item"><b>Actores: </b>
+                                                                                        <ul>
+                                                                                            <% if (actors.length === 0) { %>
+                                                                                                <li>Sin actores registrados</li>
+                                                                                            <% } else { %>
+                                                                                                <% actors.forEach(actor => { %>
+                                                                                                    <li><%= actor.first_name %> <%= actor.last_name %></li>
+                                                                                                <% }); %>
+                                                                                            <% } %>
+                                                                                        </ul>
+                                                                                    </li>          
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cerrar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <a class="btn btn-sm btn-outline-dark" href="/movies/edit/<%= id %>"><i
+                                                class="fas fa-edit"></i></a>
+
+                                        <!-- Button trigger modal delete -->
+                                        <button type="button" class="btn btn-sm btn-outline-dark"
+                                            data-bs-toggle="modal" data-bs-target="#removeMovie<%= id %>">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="removeMovie<%= id %>" tabindex="-1"
+                                            aria-labelledby="removeMovie<%= id %>Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="removeMovie<%= id %>Label">
+                                                            ADVERTENCIA!</h1>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Esta a punto de eliminar: <b>
+                                                                <%= title %>.
+                                                            </b> ¿Desea continuar?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancelar</button>
+                                                        <form action="/movies/delete/<%= id %>?_method=DELETE"
+                                                            method="POST">
+                                                            <button type="submit"
+                                                                class="btn btn-danger">Eliminar</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </main>
+           
+</body>
+
+</html>

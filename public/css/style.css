@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+    padding: 10px;
+}
+a {
+    color: #3d6bea;
+    text-decoration: none;
+}
+img {
+    width: 150px;
+    height: 50px;
+}
+figure {
+    width: 20%;
+}
+.titulo {
+    text-align: center;
+}
+
+.animation-container {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.animated-text {
+    animation: slideFromRight 2.5s ease forwards;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    left: 100%;
+    font-size: 22px;
+}
+
+@keyframes slideFromRight {
+    to {
+        left: 50%;
+    }
+}
+
+@media (min-width: 768px) {
+    .animated-text {
+        font-size: 30px;
+    }
+}

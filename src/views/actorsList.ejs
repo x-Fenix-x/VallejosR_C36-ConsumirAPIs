@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('partials/head', {title: 'Listado de Actores' }) %>
+
+    <body>
+        <%- include('partials/header') %>
+
+        <main>
+            <div class="col-12 col-md-10 mx-auto mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <nav
+                            class="d-flex justify-content-between"
+                            aria-label="breadcrumb"
+                        >
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/">Inicio</a>
+                                </li>
+                                <li
+                                    class="breadcrumb-item active"
+                                    aria-current="page"
+                                >
+                                    Actores
+                                </li>
+                            </ol>
+                            <a href="/actors/add" class="btn btn-dark btn-sm"
+                                >Agregar Actor</a
+                            >
+                        </nav>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="table-dark" scope="col">#</th>
+                                    <th class="table-dark" scope="col">
+                                        Nombre
+                                    </th>
+                                    <th
+                                        class="table-dark d-none d-md-table-cell"
+                                        scope="col"
+                                    >
+                                        Apellido
+                                    </th>
+                                    <th
+                                        class="table-dark d-none d-md-table-cell"
+                                        scope="col"
+                                    >
+                                        Rating
+                                    </th>
+                                    <th
+                                        class="table-dark d-none d-md-table-cell"
+                                        scope="col"
+                                    >
+                                        ID Pelicula favorita
+                                    </th>
+                                    <th class="table-dark" scope="col">
+                                        Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% actors.forEach(({id, first_name, last_name,
+                                rating, favorite_movie_id }, index)=> { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= first_name %></td>
+                                    <td><%= last_name %></td>
+                                    <td class="d-none d-md-table-cell">
+                                        <% if (rating < 4) { %>
+                                        <span class="text-danger">
+                                            <%= rating %>
+                                        </span>
+                                        <% } else if (rating < 6) { %>
+                                        <span class="text-warning">
+                                            <%= rating %>
+                                        </span>
+                                        <% } else { %>
+                                        <span class="text-success">
+                                            <%= rating %>
+                                        </span>
+                                        <% } %>
+                                    </td>
+                                    <td class="d-none d-md-table-cell">
+                                        <%= favorite_movie_id %>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a
+                                                href="/actors/detail/<%= id %>"
+                                                class="btn btn-outline-dark btn-sm"
+                                                ><i class="fas fa-eye"></i
+                                            ></a>
+                                            <a
+                                                href="/actors/edit/<%= id %>"
+                                                class="btn btn-outline-dark btn-sm"
+                                                ><i class="fas fa-edit"></i
+                                            ></a>
+                                            <a
+                                                href="/actors/delete/<%= id %>"
+                                                class="btn btn-outline-dark btn-sm"
+                                                ><i class="fas fa-trash"></i
+                                            ></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </body>
+</html>

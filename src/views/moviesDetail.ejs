@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('partials/head', {title}) %>
+
+<body>
+    <%- include('partials/header') %>
+
+    <main>
+
+        <div class="col-12 col-md-10 mx-auto mt-3">
+            <div class="card">
+                <div class="card-header">
+                    <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/movies">Películas</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+                        </ol>
+                        <div>
+                            <a href="/movies/edit/<%= id %>" class="btn btn-dark btn-sm">Editar</a>
+                            <a href="/movies/delete/<%= id %>" class="btn btn-danger btn-sm">Eliminar</a>
+                        </div>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-md-4">
+                            <img src="/img/<%= image %>" class="img-fluid" alt="">
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><b><%= title.toUpperCase() %></b></li>
+                                <li class="list-group-item"><b>Género: </b><%= genre?.name || "Sin clasificar" %></li>
+                                <li class="list-group-item"><b>Duración: </b><%= (length != null) ? (length + " min") : "Sin datos" %></li>
+                                <li class="list-group-item"><b>Calificación: </b><%= rating %></li>
+                                <li class="list-group-item"><b>Premios: </b><%= awards %></li>
+                                <li class="list-group-item"><b>Fecha de estreno: </b><%= moment(release_date, 'DDMMMMY').locale('es').format('DD [de] MMMM [de] YYYY') %></li>
+                                <li class="list-group-item"><b>Actores: </b>
+                                    <ul>
+                                        <% if (actors.length === 0) { %>
+                                            <li>Sin actores registrados</li>
+                                        <% } else { %>
+                                            <% actors.forEach(actor => { %>
+                                                <li><%= actor.first_name %> <%= actor.last_name %></li>
+                                            <% }); %>
+                                        <% } %>
+                                    </ul>
+                                </li>                                
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

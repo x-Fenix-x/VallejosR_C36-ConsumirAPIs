@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<%- include('partials/head', {title: genre.name }) %>
+
+
+    <body>
+        <%- include('partials/header') %>
+
+            <div class="col-12 col-md-10 mx-auto mt-3">
+                <div class="card">
+                    <div class="card-header">
+                        <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/genres">Géneros</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    <%= genre.name %>
+                                </li>
+                            </ol>
+                            <div>
+                                <a href="/genres/edit/<%= genre.id %>" class="btn btn-dark btn-sm">Editar</a>
+                                <a href="/genres/delete/<%= genre.id %>" class="btn btn-danger btn-sm">Eliminar</a>
+                            </div>
+                        </nav>
+                    </div>
+
+                    <div class="card-body">
+                        <h1>
+                            <%= genre.name %>
+                        </h1>
+                        <br>
+                        <p>RANKING: <%= genre.ranking %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+    </body>
+
+</html>

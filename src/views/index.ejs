@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<%- include('partials/head', {title: 'Inicio' }) %>
+
+  <body class="index">
+    <%- include('partials/header') %>
+
+      <div class="animation-container mt-4">
+        <p class="animated-text">Bienvenido a Digital <span class="text-danger">Movies</span>🎃</p>
+      </div>
+
+      <div class="titulo justify-content-between flex-wrap mt-5">
+        <div>
+          <a href="/movies" class="btn btn-outline-dark btn-sm p-4"><i class="d-block fa-solid fa-film fs-5"></i>
+            Películas</a>
+          <a href="/genres" class="btn btn-outline-dark btn-sm p-4"><i
+              class="d-block fa-sharp fa-solid fa-masks-theater fs-5"></i> Géneros</a>
+          <a href="/actors" class="btn btn-outline-dark btn-sm p-4"> <i
+              class="d-block fa-solid fa-users-line fs-5"></i>
+            Actores</a>
+        </div>
+      </div>
+  </body>
+
+</html>

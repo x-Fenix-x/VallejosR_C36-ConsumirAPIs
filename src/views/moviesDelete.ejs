@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<%- include('partials/head', {title: 'Borrar Película' }) %>
+
+    <body>
+        <%- include('partials/header') %>
+            <div class="card col-12 col-md-10 mx-auto mt-3">
+                <div class="card-header">
+                    <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/movies">Películas</a></li>
+                            <li class="breadcrumb-item"><a href="/movies/detail/<%= movie.id %>"><%= movie.title %></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Eliminar</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="card-body">
+                    <h1 class="fs-5">Esta a punto de eliminar la película: <b>
+                            <%= movie.title %>
+                        </b>. ¿Desea continuar?</h1>
+                    <form action="/movies/delete/<%= movie.id %>?_method=DELETE" method="POST">
+                        <div class="mt-4"> 
+                            <div class="col-12 d-md-none">
+                                <button type="submit" class="btn btn-danger w-100">Borrar la Película</button>
+                            </div>
+                            <div class="col-md-12 d-none d-md-flex justify-content-center">
+                                <button class="btn btn-danger btn-sm me-3 col-3" type="submit">Borrar la Película</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+    </body>
+
+</html>
