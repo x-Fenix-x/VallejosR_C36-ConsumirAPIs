@@ -10,6 +10,7 @@ const moment = require('moment');
 const Movies = db.Movie;
 const Genres = db.Genre;
 const Actors = db.Actor;
+const API = 'http://www.omdbapi.com/?apikey=d399100a';
 
 const moviesController = {
     list: async (req, res) => {
@@ -60,6 +61,21 @@ const moviesController = {
         }).then((movies) => {
             return res.render('recommendedMovies.ejs', { movies });
         });
+    },
+    search: (req, res) => {
+        const title = req.query.titulo;
+
+        fetch(`${API}&t=${title}`)
+            .then((data) => {
+                return data.json(); //parsear información
+            })
+            .then((movie) => {
+                // console.log(movie);
+                return res.render('moviesDetailOmdb', {
+                    movie,
+                });
+            })
+            .catch((error) => console.log(error));
     },
 
     // Rutas para trabajar con el CRUD

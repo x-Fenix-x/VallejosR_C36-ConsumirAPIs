@@ -1,6 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const {list, recomended, detail, new: newest, add, create, edit, update, delete: remove, destroy} = require('../controllers/moviesController');
+const {
+    list,
+    recomended,
+    detail,
+    new: newest,
+    search,
+    add,
+    create,
+    edit,
+    update,
+    delete: remove,
+    destroy,
+} = require('../controllers/moviesController');
 const upload = require('../middlewares/upload');
 
 router
@@ -11,6 +23,7 @@ router
 
     //Rutas creación del CRUD
     .get('/movies/add', add)
+    .get('/movies/search', search)
     .post('/movies/create', upload.single('image'), create)
     .get('/movies/edit/:id', edit)
     .put('/movies/update/:id', upload.single('image'), update)
