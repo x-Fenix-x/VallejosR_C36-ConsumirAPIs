@@ -10,14 +10,38 @@
         
     <div class="col-12 col-md-10 mx-auto mt-3">
         <div class="card">
-            <div class="card-header">
-                <nav class="d-flex justify-content-between" aria-label="breadcrumb">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Inicio</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Películas</li>
                     </ol>
-                    <a href="/movies/add" class="btn btn-dark btn-sm">Agregar película</a>
                 </nav>
+                <div class="pagination">
+                        <ul class="pagination">
+                          <li class="page-item">
+                            <a class="page-link" href="<%= paginate.href(true).prev %>" aria-label="Previous">
+                              <span aria-hidden="true">&laquo;</span>
+                            </a>
+                          </li>
+                          
+                        <% if (pages) { %>
+                            <% pages.forEach(page => { %>
+                                <li class="page-number">
+                                    <a href="<%= page.url %>" class="page-link <%= page.number === currentPage && "active" %>"><%= page.number %></a>
+                                </li>
+                            <% }) %>
+                        <% } %>
+
+                         
+                          <li class="page-item">
+                            <a class="page-link" href="<%= paginate.href(true).prev %>" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                            </a>
+                          </li>
+                        </ul>
+                </div>
+                  <a href="/movies/add" class="btn btn-dark btn-sm">Agregar película</a>
             </div>
 
             <div class="card-body">

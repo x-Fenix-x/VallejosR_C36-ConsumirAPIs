@@ -1,12 +1,12 @@
-const path = require('path');
 const db = require('../database/models');
-const sequelize = db.sequelize;
+const paginate = require('express-paginate');
 const moment = require('moment');
+const fetch = require('node-fetch');
 
-//Aqui tienen una forma de llamar a cada uno de los modelos
+//Forma de llamar a cada uno de los modelos
 // const {Movies,Genres,Actor} = require('../database/models');
 
-//Aquí tienen otra forma de llamar a los modelos creados
+//Otra forma de llamar a los modelos creados
 const Movies = db.Movie;
 const Genres = db.Genre;
 const Actors = db.Actor;
@@ -15,18 +15,30 @@ const API = 'http://www.omdbapi.com/?apikey=d399100a';
 const moviesController = {
     list: async (req, res) => {
         try {
-            const movies = await db.Movie.findAll({
+            const { count, rows } = await db.Movie.findAndCountAll({
                 include: ['genre', 'actors'],
+                limit: req.query.limit,
+                offset: req.skip,
             });
+            
+            const pagesCount = Math.ceil(count / req.query.limit);
 
             const actors = await db.Actor.findAll({
                 order: [['first_name'], ['last_name']],
             });
 
             res.render('moviesList.ejs', {
-                movies,
+                movies: rows,
                 moment,
                 actors,
+                pages: paginate.getArrayPages(req)(
+                    pagesCount,
+                    pagesCount,
+                    req.query.page
+                ),
+                paginate,
+                pagesCount,
+                currentPage: req.query.page,
             });
         } catch (error) {
             console.log('Error:', error);

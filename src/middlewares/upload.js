@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
         return cb(null, 'public/img');
     },
     filename: (req, file, cb) => {
-        return cb(null, `${uuidv4()}${path.extname(file.originalname)}`);
+        return cb(null, `${uuidv4()}_movie_${path.extname(file.originalname)}`);
     },
 });
 
