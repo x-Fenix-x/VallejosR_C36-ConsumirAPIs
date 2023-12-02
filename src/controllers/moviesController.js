@@ -20,7 +20,7 @@ const moviesController = {
                 limit: req.query.limit,
                 offset: req.skip,
             });
-            
+
             const pagesCount = Math.ceil(count / req.query.limit);
 
             const actors = await db.Actor.findAll({
@@ -75,19 +75,31 @@ const moviesController = {
         });
     },
     search: (req, res) => {
-        const title = req.query.titulo;
+        const keyword = req.query.keyword;
 
-        fetch(`${API}&t=${title}`)
-            .then((data) => {
-                return data.json(); //parsear información
-            })
-            .then((movie) => {
-                // console.log(movie);
-                return res.render('moviesDetailOmdb', {
-                    movie,
-                });
+        db.Movie.findAll({
+            where: {
+                [Op.substring]: keyword,
+            },
+        })
+            .then((movies) => {
+                return res.render('moviesList', { movies });
             })
             .catch((error) => console.log(error));
+
+        // const title = req.query.titulo;
+
+        // fetch(`${API}&t=${title}`)
+        //     .then((data) => {
+        //         return data.json(); //parsear información
+        //     })
+        //     .then((movie) => {
+        //         // console.log(movie);
+        //         return res.render('moviesDetailOmdb', {
+        //             movie,
+        //         });
+        //     })
+        //     .catch((error) => console.log(error));
     },
 
     // Rutas para trabajar con el CRUD
