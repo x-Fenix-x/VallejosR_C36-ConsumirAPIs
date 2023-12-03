@@ -90,8 +90,7 @@ const genresController = {
                 })
                 .catch((error) => console.log(error));
         } else {
-            db.Genre.findByPk(req.params.id)
-            .then((genre) => {
+            db.Genre.findByPk(req.params.id).then((genre) => {
                 return res.render('genresEdit', {
                     errors: errors.mapped(),
                     old: req.body,
