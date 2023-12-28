@@ -1,16 +1,14 @@
 const db = require('../database/models');
 const paginate = require('express-paginate');
 const moment = require('moment');
-const fetch = require('node-fetch');
+const { Op } = require('sequelize');
+const translatte = require('translatte');
+const axios = require('axios');
 
-//Forma de llamar a cada uno de los modelos
-// const {Movies,Genres,Actor} = require('../database/models');
-
-//Otra forma de llamar a los modelos creados
 const Movies = db.Movie;
 const Genres = db.Genre;
 const Actors = db.Actor;
-const API = 'http://www.omdbapi.com/?apikey=d399100a';
+const URL_BASE = 'http://www.omdbapi.com/?&apikey=d399100a';
 
 const moviesController = {
     list: async (req, res) => {
@@ -31,6 +29,7 @@ const moviesController = {
                 movies: rows,
                 moment,
                 actors,
+                result: 0,
                 pages: paginate.getArrayPages(req)(
                     pagesCount,
                     pagesCount,
@@ -74,32 +73,160 @@ const moviesController = {
             return res.render('recommendedMovies.ejs', { movies });
         });
     },
-    search: (req, res) => {
-        const keyword = req.query.keyword;
+    search: async (req, res) => {
+        const { count, rows } = await db.Movie.findAndCountAll({
+            include: ['genre', 'actors'],
+            limit: req.query.limit,
+            offset: req.skip,
+        });
+        const pagesCount = Math.ceil(count / req.query.limit);
+        try {
+            let keyword = req.query.keyword;
+            keyword = keyword.trim();
 
-        db.Movie.findAll({
-            where: {
-                [Op.substring]: keyword,
-            },
-        })
-            .then((movies) => {
-                return res.render('moviesList', { movies });
-            })
-            .catch((error) => console.log(error));
+            const movies = await db.Movie.findAll({
+                where: {
+                    [Op.or]: [
+                        {
+                            title: {
+                                [Op.like]: `%${keyword}%`,
+                            },
+                        },
+                    ],
+                },
+                include: ['actors'],
+            });
 
-        // const title = req.query.titulo;
+            if (movies.length === 0) {
+                const response = await axios.get(`${URL_BASE}&t=${keyword}`);
+                const {
+                    Title,
+                    Released,
+                    Genre,
+                    Awards,
+                    Poster,
+                    Ratings,
+                    Runtime,
+                } = response.data;
 
-        // fetch(`${API}&t=${title}`)
-        //     .then((data) => {
-        //         return data.json(); //parsear información
-        //     })
-        //     .then((movie) => {
-        //         // console.log(movie);
-        //         return res.render('moviesDetailOmdb', {
-        //             movie,
-        //         });
-        //     })
-        //     .catch((error) => console.log(error));
+                const awardsParseado = (awards) => {
+                    if (awards === 'N/A') {
+                        return 0;
+                    }
+
+                    const winsArray = awards.match(/(\d+) win/);
+                    const wins = winsArray ? parseInt(winsArray[1]) : 0;
+
+                    const oscarWinsArray = awards.match(/(\d+) Oscar/);
+                    const oscarWins = oscarWinsArray
+                        ? parseInt(oscarWinsArray[1])
+                        : 0;
+
+                    return wins + oscarWins;
+                };
+
+                const awards = awardsParseado(Awards);
+                const rating = Ratings[0].Value.split('/')[0];
+                const release_date = moment(Released);
+                const image = Poster;
+                const durationMovie = Runtime.match(/\d+/);
+                const lengthParseado = durationMovie
+                    ? parseInt(durationMovie[0])
+                    : null;
+
+                const newGenre = Genre.split(',')[0];
+                let genre_id;
+                if (newGenre) {
+                    const { text } = await translatte(newGenre, { to: 'es' });
+
+                    const genres = await db.Genre.findAll({
+                        order: [['ranking', 'DESC']],
+                    });
+
+                    const [genre, genreCreated] = await db.Genre.findOrCreate({
+                        where: { name: text },
+                        defaults: {
+                            active: 1,
+                            ranking: genres[0].ranking + 1,
+                        },
+                    });
+                    genre_id = genre.id;
+                    // console.log(genre_id)
+                }
+
+                let newMovie = {
+                    title: Title,
+                    awards: awards,
+                    rating,
+                    release_date,
+                    length: lengthParseado,
+                    image,
+                    actors: Array.isArray(Actors)
+                        ? Actors.map((actor) => actor.name)
+                        : typeof Actors === 'string'
+                        ? Actors.split(',').map((actor) => actor.trim())
+                        : [],
+                    genre_id,
+                };
+
+                await db.Movie.create(newMovie);
+
+                const updatedMovies = await db.Movie.findAll({
+                    where: {
+                        [Op.or]: [
+                            {
+                                title: {
+                                    [Op.like]: `%${keyword}%`,
+                                },
+                            },
+                        ],
+                    },
+                });
+
+                return res.render('moviesList', {
+                    movies: updatedMovies,
+                    moment,
+                    pages: paginate.getArrayPages(req)(
+                        pagesCount,
+                        pagesCount,
+                        req.query.page
+                    ),
+                    paginate,
+                    pagesCount,
+                    currentPage: req.query.page,
+                    result: 1,
+                });
+            } else {
+                return res.render('moviesList', {
+                    movies,
+                    moment,
+                    pages: paginate.getArrayPages(req)(
+                        pagesCount,
+                        pagesCount,
+                        req.query.page
+                    ),
+                    paginate,
+                    pagesCount,
+                    currentPage: req.query.page,
+                    result: 1,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.render('moviesList', {
+                movies: [],
+                moment,
+                pages: paginate.getArrayPages(req)(
+                    pagesCount,
+                    pagesCount,
+                    req.query.page
+                ),
+                paginate,
+                pagesCount,
+                currentPage: req.query.page,
+                result: 1,
+            });
+        }
     },
 
     // Rutas para trabajar con el CRUD
@@ -274,5 +401,4 @@ const moviesController = {
             .catch((error) => console.log(error));
     },
 };
-
 module.exports = moviesController;

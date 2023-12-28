@@ -47,3 +47,8 @@ figure {
         font-size: 30px;
     }
 }
+
+.pagination{
+    display: flex;
+    justify-content: center;
+}
